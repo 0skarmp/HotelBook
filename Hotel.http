@@ -1,0 +1,12 @@
+@Hotel_HostAddress = https://localhost:7245
+###Guardar una habitacion
+POST {{Hotel_HostAddress}}/api/rooms
+Content-Type: application/json
+{
+    "number": "101",
+    "type": "Single",
+    "price": 100.00,
+    "available": true
+} 
+
+###
