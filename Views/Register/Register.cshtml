@@ -1,0 +1,31 @@
+﻿<h2 class="text-red-800">Registro</h2>
+
+<form id="RegisterForm">
+    <input type="text" id="username" placeholder="Usuario" />
+    <input type="password" id="password" placeholder="Password" />
+    <input  type="email" id="email" placeholder="email"/>
+    <button type="submit">Registro</button> 
+</form>
+
+<script>
+    document.getElementById("RegisterForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const response = await fetch("/api/Register/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                Username: document.getElementById("username").value,
+                Password: document.getElementById("password").value,
+                Email: document.getElementById("email").value
+            })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            alert("Registro exitoso: " + data.message);
+            window.location.href = "/Home/Index";
+        } else {
+            alert("Error en el registro");
+        }
+    });
+</script>
+

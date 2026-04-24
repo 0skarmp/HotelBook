@@ -8,5 +8,6 @@ namespace Hotel.Models
         {
         }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
