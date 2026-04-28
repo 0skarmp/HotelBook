@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="flex">
+    @await Html.PartialAsync("_SideBar")
+
+    <div class="flex-1 ml-64">
+        @await Html.PartialAsync("_Header")
+
+        <main class="p-6">
+            <h1 class="text-2xl font-bold mb-4 text-red-800">Bienvenido al Dashboard</h1>
+
+            <!-- Botón para abrir modal de creación -->
+            <div class="mb-4">
+                <button id="openCreateModalBtn" class="px-4 py-2 bg-blue-600 text-white rounded">
+                    <i class="fa-solid fa-plus"></i> Add Room
+                </button>
+            </div>
+
+            <!-- Contenedor de habitaciones -->
+            <div id="roomsContainer" class="grid grid-cols-3 gap-4">
+                <!-- Aquí se insertan las tarjetas -->
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Importar modal de creación -->
+@await Html.PartialAsync("_CreateRoomModal")
+
+<script>
+    // Abrir modal
+    document.getElementById("openCreateModalBtn").addEventListener("click", () => {
+        document.getElementById("createRoomModal").classList.remove("hidden");
+    });
+
+    // Cerrar modal
+    document.getElementById("closeCreateModalBtn").addEventListener("click", () => {
+        document.getElementById("createRoomModal").classList.add("hidden");
+    });
+
+    // Crear habitación en estado Disponible
+    document.getElementById("createRoomForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const number = document.getElementById("roomNumber").value;
+        const type = document.getElementById("roomType").value;
+
+        const container = document.getElementById("roomsContainer");
+        const newId = Date.now();
+
+        const cardHtml = `
+            <div id="room-${newId}"
+                 class="p-4 rounded shadow-md text-gray-800 text-sm bg-green-200 cursor-pointer"
+                 onclick="openReservationModal(${newId})">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="font-bold text-lg">${number}</h2>
+                        <p class="text-sm">${type}</p>
+                    </div>
+                    <span class="px-2 py-1 bg-green-600 text-white text-xs rounded">LIBRE</span>
+                </div>
+                <div class="flex flex-col items-center mt-4">
+                    <i class="fa-solid fa-check-circle text-green-600 text-3xl"></i>
+                    <p class="text-green-600 mt-2">Disponible</p>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML("beforeend", cardHtml);
+
+        document.getElementById("createRoomModal").classList.add("hidden");
+        document.getElementById("createRoomForm").reset();
+    });
+
+    // Abrir modal de reserva al hacer clic en la tarjeta
+    function openReservationModal(roomId) {
+        // Aquí llamas al modal de reserva (_RoomModal.cshtml)
+        document.getElementById("roomModal").classList.remove("hidden");
+    }
+</script>

@@ -1,0 +1,25 @@
+﻿@{
+    Layout = "_Layout";
+}
+<div id="createRoomModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-lg w-96">
+        <h2 class="text-xl font-bold mb-4">Nueva Habitación</h2>
+        <form id="createRoomForm">
+            <div class="mb-2">
+                <label class="block">Número</label>
+                <input type="text" id="roomNumber" class="w-full border rounded p-2" />
+            </div>
+            <div class="mb-2">
+                <label class="block">Tipo</label>
+                <select id="roomType" class="w-full border rounded p-2">
+                    <option value="Simple">Simple</option>
+                    <option value="Doble">Doble</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="button" id="closeCreateModalBtn" class="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Crear</button>
+            </div>
+        </form>
+    </div>
+</div>

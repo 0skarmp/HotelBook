@@ -1,5 +1,6 @@
 ﻿using Hotel.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Controllers
 {
@@ -15,19 +16,18 @@ namespace Hotel.Controllers
         }
 
         [HttpGet]
-        public string Test()
+        public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
         {
-            return "Hello from RoomsController!";
+            return await _context.Rooms.ToListAsync();
         }
 
-        //Endpoint para guardar una habitacion
         [HttpPost]
-        public async Task<ActionResult<Room>> Save(Room room)
+        public async Task<ActionResult<Room>> CreateRoom(Room room)
         {
+            room.Status = "Libre"; // siempre inicia libre
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Save), new { id = room.Id }, room);
+            return CreatedAtAction(nameof(GetRooms), new { id = room.Id }, room);
         }
-
     }
 }

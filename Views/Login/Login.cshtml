@@ -53,7 +53,7 @@
         if (response.ok) {
             const data = await response.json();
             alert("Login exitoso: " + data.message);
-            window.location.href = "/Home/Index";
+            window.location.href = "/Dashboard";
         } else {
             document.getElementById("error").innerText = "Usuario o contraseña incorrectos";
         }

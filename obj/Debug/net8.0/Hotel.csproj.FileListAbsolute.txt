@@ -111,4 +111,3 @@ D:\Microsoft\VisualStudio\repos\Hotel\Hotel\bin\Debug\net8.0\zh-Hant\Microsoft.C
 D:\Microsoft\VisualStudio\repos\Hotel\Hotel\bin\Debug\net8.0\package-lock.json
 D:\Microsoft\VisualStudio\repos\Hotel\Hotel\bin\Debug\net8.0\package.json
 D:\Microsoft\VisualStudio\repos\Hotel\Hotel\bin\Debug\net8.0\Hotel.staticwebassets.runtime.json
-D:\Microsoft\VisualStudio\repos\Hotel\Hotel\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -1,0 +1,20 @@
+﻿{
+@Layout = "_Layout";
+}
+@model Hotel.Models.Room;
+
+<div id="room-@Model.Id"
+     class="p-4 rounded shadow-md text-gray-800 text-sm bg-green-200 cursor-pointer"
+     onclick="openReservationModal(@Model.Id)">
+    <div class="flex justify-between items-center">
+        <div>
+            <h2 class="font-bold text-lg">@Model.Number</h2>
+            <p class="text-sm">@Model.Type</p>
+        </div>
+        <span class="px-2 py-1 bg-green-600 text-white text-xs rounded">LIBRE</span>
+    </div>
+    <div class="flex flex-col items-center mt-4">
+        <i class="fa-solid fa-check-circle text-green-600 text-3xl"></i>
+        <p class="text-green-600 mt-2">Disponible</p>
+    </div>
+</div>
