@@ -30,53 +30,80 @@
 <!-- Importar modal de creación -->
 @await Html.PartialAsync("_CreateRoomModal")
 
+<!-- Importar modal de reserva -->
+
+
 <script>
-    // Abrir modal
+    // 🔹 Cargar todas las habitaciones al iniciar
+    async function loadRooms() {
+        const response = await fetch("/api/rooms");
+        if (response.ok) {
+            const rooms = await response.json();
+            const container = document.getElementById("roomsContainer");
+            container.innerHTML = "";
+
+            rooms.forEach(room => {
+                const cardHtml = `
+                    <div id="room-${room.id}"
+                         class="p-4 rounded shadow-md text-gray-800 text-sm ${room.status === "Libre" ? "bg-green-200" : "bg-red-200"} cursor-pointer"
+                         onclick="openReservationModal(${room.id})">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h2 class="font-bold text-lg">${room.number}</h2>
+                                <p class="text-sm">${room.type}</p>
+                            </div>
+                            <span class="px-2 py-1 ${room.status === "Libre" ? "bg-green-600" : "bg-red-600"} text-white text-xs rounded">${room.status}</span>
+                        </div>
+                        <div class="flex flex-col items-center mt-4">
+                            <i class="fa-solid ${room.status === "Libre" ? "fa-check-circle text-green-600" : "fa-times-circle text-red-600"} text-3xl"></i>
+                            <p class="${room.status === "Libre" ? "text-green-600" : "text-red-600"} mt-2">${room.status === "Libre" ? "Disponible" : "Ocupada"}</p>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML("beforeend", cardHtml);
+            });
+        } else {
+            alert("Error al cargar habitaciones");
+        }
+    }
+
+    // 🔹 Abrir modal de creación
     document.getElementById("openCreateModalBtn").addEventListener("click", () => {
         document.getElementById("createRoomModal").classList.remove("hidden");
     });
 
-    // Cerrar modal
+    // 🔹 Cerrar modal de creación
     document.getElementById("closeCreateModalBtn").addEventListener("click", () => {
         document.getElementById("createRoomModal").classList.add("hidden");
     });
 
-    // Crear habitación en estado Disponible
-    document.getElementById("createRoomForm").addEventListener("submit", (e) => {
+    // 🔹 Crear habitación en DB
+    document.getElementById("createRoomForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const number = document.getElementById("roomNumber").value;
         const type = document.getElementById("roomType").value;
 
-        const container = document.getElementById("roomsContainer");
-        const newId = Date.now();
+        const response = await fetch("/api/rooms", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ number, type })
+        });
 
-        const cardHtml = `
-            <div id="room-${newId}"
-                 class="p-4 rounded shadow-md text-gray-800 text-sm bg-green-200 cursor-pointer"
-                 onclick="openReservationModal(${newId})">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="font-bold text-lg">${number}</h2>
-                        <p class="text-sm">${type}</p>
-                    </div>
-                    <span class="px-2 py-1 bg-green-600 text-white text-xs rounded">LIBRE</span>
-                </div>
-                <div class="flex flex-col items-center mt-4">
-                    <i class="fa-solid fa-check-circle text-green-600 text-3xl"></i>
-                    <p class="text-green-600 mt-2">Disponible</p>
-                </div>
-            </div>
-        `;
-
-        container.insertAdjacentHTML("beforeend", cardHtml);
-
-        document.getElementById("createRoomModal").classList.add("hidden");
-        document.getElementById("createRoomForm").reset();
+        if (response.ok) {
+            await loadRooms(); // refrescar lista completa
+            document.getElementById("createRoomModal").classList.add("hidden");
+            document.getElementById("createRoomForm").reset();
+        } else {
+            alert("Error al guardar la habitación en la base de datos");
+        }
     });
 
-    // Abrir modal de reserva al hacer clic en la tarjeta
+    // 🔹 Abrir modal de reserva
     function openReservationModal(roomId) {
-        // Aquí llamas al modal de reserva (_RoomModal.cshtml)
-        document.getElementById("roomModal").classList.remove("hidden");
+        document.getElementById("reservationRoomId").value = roomId;
+        document.getElementById("reservationModal").classList.remove("hidden");
     }
+
+    // 🔹 Cargar habitaciones al iniciar
+    document.addEventListener("DOMContentLoaded", loadRooms);
 </script>
