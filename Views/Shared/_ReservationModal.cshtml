@@ -1,0 +1,74 @@
+﻿
+
+<div id="reservationModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+        <h2 class="text-xl font-bold mb-4">Nueva Reserva</h2>
+
+        <form id="reservationForm">
+            <input type="hidden" id="roomId" name="roomId" />
+
+            <div class="mb-3">
+                <label for="firstname" class="block text-sm font-medium">First Name</label>
+                <input type="text" id="firstname" name="firstname"
+                       class="w-full border rounded px-3 py-2" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="middlename" class="block text-sm font-medium">Middle Name</label>
+                <input type="text" id="middlename" name="middlename"
+                       class="w-full border rounded px-3 py-2" />
+            </div>
+
+            <div class="mb-3">
+                <label for="lastname" class="block text-sm font-medium">Last Name</label>
+                <input type="text" id="lastname" name="lastname"
+                       class="w-full border rounded px-3 py-2" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="country" class="block text-sm font-medium">Country</label>
+                <input type="text" id="country" name="country"
+                       class="w-full border rounded px-3 py-2" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="phoneNumber" class="block text-sm font-medium">Phone Number</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber"
+                       class="w-full border rounded px-3 py-2" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="passport" class="block text-sm font-medium">Passport</label>
+                <input type="text" id="passport" name="passport"
+                       class="w-full border rounded px-3 py-2" required />
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium">Entry Date</label>
+                <input type="date" id="entryDate"
+                       class="w-full border rounded px-3 py-2" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-medium">Exit Date</label>
+                <input type="date" id="exitDate"
+                       class="w-full border rounded px-3 py-2" required />
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="button" onclick="closeReservationModal()"
+                        class="px-4 py-2 bg-gray-400 text-white rounded">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded">
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function closeModal() {
+        document.getElementById("reservationModal").classList.add("hidden");
+    }
+</script>
