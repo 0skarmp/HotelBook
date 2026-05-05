@@ -44,14 +44,23 @@
             </div>
             <div class="mb-3">
                 <label class="block text-sm font-medium">Entry Date</label>
-                <input type="date" id="entryDate"
+                <input type="date" id="entryDate" name="entryDate"
                        class="w-full border rounded px-3 py-2" required />
             </div>
 
             <div class="mb-3">
                 <label class="block text-sm font-medium">Exit Date</label>
-                <input type="date" id="exitDate"
+                <input type="date" id="exitDate" name="exitDate"
                        class="w-full border rounded px-3 py-2" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="block text-sm font-medium">Estado</label>
+                <select id="status" name="status" class="w-full border rounded px-3 py-2" required>
+                    <option value="ocupado">Ocupado</option>
+                    <option value="mantenimiento">Mantenimiento</option>
+                    <option value="bloqueado">Bloqueado</option>
+                </select>
             </div>
 
             <div class="flex justify-end gap-2 mt-4">
@@ -68,7 +77,40 @@
     </div>
 </div>
 <script>
-    function closeModal() {
+    document.getElementById("reservationForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const reservation = {
+            roomId: parseInt(formData.get("roomId")),
+            firstName: formData.get("firstname"),
+            middleName: formData.get("middlename"),
+            lastName: formData.get("lastname"),
+            country: formData.get("country"),
+            phoneNumber: formData.get("phoneNumber"),
+            passport: formData.get("passport"),
+            entryDate: formData.get("entryDate") + 'T00:00:00',
+            exitDate: formData.get("exitDate") + 'T00:00:00',
+            status: formData.get("status")
+        };
+
+        const response = await fetch("/api/reservations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(reservation)
+        });
+
+        if (response.ok) {
+            alert("Reserva creada exitosamente");
+            document.getElementById("reservationModal").classList.add("hidden");
+            location.reload(); 
+        } else {
+            const error = await response.text();
+            alert("Error: " + error);
+        }
+    });
+
+    function closeReservationModal() {
         document.getElementById("reservationModal").classList.add("hidden");
     }
 </script>

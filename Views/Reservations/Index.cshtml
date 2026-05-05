@@ -1,0 +1,115 @@
+@{
+    ViewData["Title"] = "Reservas";
+    ViewData["ShowSidebar"] = true;
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("_Header")
+
+<main class="p-6">
+    <h1 class="text-2xl font-bold mb-4 text-blue-700">Lista de Reservas</h1>
+
+    <div class="flex justify-between items-center mb-4">
+        <p class="text-gray-600">Gestiona las reservas del hotel</p>
+        <a href="/Dashboard" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Agregar Reserva
+        </a>
+    </div>
+
+    <!-- Reportes Diarios -->
+    <div class="bg-white shadow rounded p-4 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Reportes del Día</h2>
+        <table id="reportsTable" class="min-w-full border-collapse border border-gray-300 text-sm shadow-md rounded-lg">
+            <thead class="bg-gray-100 text-gray-800 font-semibold">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-3">Usuario</th>
+                    <th class="border border-gray-300 px-4 py-3">Acción</th>
+                    <th class="border border-gray-300 px-4 py-3">Reserva ID</th>
+                    <th class="border border-gray-300 px-4 py-3">Fecha</th>
+                    <th class="border border-gray-300 px-4 py-3">Detalles</th>
+                </tr>
+            </thead>
+            <tbody id="reportsBody" class="divide-y divide-gray-200">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Lista de Reservas -->
+    <div class="bg-white shadow rounded p-4">
+        <h2 class="text-xl font-semibold mb-4">Todas las Reservas</h2>
+        <table id="reservationsTable" class="min-w-full border-collapse border border-gray-300 text-sm shadow-md rounded-lg">
+            <thead class="bg-gray-100 text-gray-800 font-semibold">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-3">Habitación</th>
+                    <th class="border border-gray-300 px-4 py-3">Huésped</th>
+                    <th class="border border-gray-300 px-4 py-3">País</th>
+                    <th class="border border-gray-300 px-4 py-3">Entrada</th>
+                    <th class="border border-gray-300 px-4 py-3">Salida</th>
+                    <th class="border border-gray-300 px-4 py-3">Estado</th>
+                </tr>
+            </thead>
+            <tbody id="reservationsBody" class="divide-y divide-gray-200">
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        // Cargar reportes del día
+        const reportsRes = await fetch("/api/reservations/reports/today");
+        if (reportsRes.ok) {
+            const reports = await reportsRes.json();
+            const reportsBody = document.getElementById("reportsBody");
+            reportsBody.innerHTML = '';
+
+            reports.forEach(report => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-gray-50";
+
+                const reportDate = new Date(report.date);
+                tr.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-3">${report.userName}</td>
+                    <td class="border border-gray-300 px-4 py-3">${report.actionType}</td>
+                    <td class="border border-gray-300 px-4 py-3">${report.reservationId || 'N/A'}</td>
+                    <td class="border border-gray-300 px-4 py-3">${reportDate.toLocaleString()}</td>
+                    <td class="border border-gray-300 px-4 py-3">${report.details || ''}</td>
+                `;
+
+                reportsBody.appendChild(tr);
+            });
+        }
+
+        // Cargar reservas
+        const reservationsRes = await fetch("/api/reservations");
+        if (reservationsRes.ok) {
+            const reservations = await reservationsRes.json();
+            const reservationsBody = document.getElementById("reservationsBody");
+            reservationsBody.innerHTML = '';
+
+            reservations.forEach(reservation => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-gray-50";
+
+                const entryDate = new Date(reservation.entryDate);
+                const exitDate = new Date(reservation.exitDate);
+                const isActive = exitDate > new Date();
+
+                tr.innerHTML = `
+                    <td class="border border-gray-300 px-4 py-3 font-medium">${reservation.room ? reservation.room.number + ' (' + reservation.room.type + ')' : 'N/A'}</td>
+                    <td class="border border-gray-300 px-4 py-3">${reservation.firstName} ${reservation.lastName}</td>
+                    <td class="border border-gray-300 px-4 py-3">${reservation.country}</td>
+                    <td class="border border-gray-300 px-4 py-3">${entryDate.toLocaleDateString()}</td>
+                    <td class="border border-gray-300 px-4 py-3">${exitDate.toLocaleDateString()}</td>
+                    <td class="border border-gray-300 px-4 py-3">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium ${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                            ${isActive ? 'Activa' : 'Completada'}
+                        </span>
+                    </td>
+                `;
+
+                reservationsBody.appendChild(tr);
+            });
+        }
+    });
+</script>

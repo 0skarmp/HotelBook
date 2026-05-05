@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class RoomsController : ControllerBase
+    [Route("[controller]")]
+    public class RoomsController : Controller
     {
         private readonly HotelContext _context;
 
@@ -15,16 +14,34 @@ namespace Hotel.Controllers
             _context = context;
         }
 
+        // Vista principal
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
+        public IActionResult Index()
         {
-            return await _context.Rooms.ToListAsync();
+            return View("Rooms");
         }
 
-        [HttpPost]
+        // API: obtener habitaciones
+        [HttpGet("/api/rooms")]
+        public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
+        {
+            var rooms = await _context.Rooms.Include(r => r.Reservations).ToListAsync();
+            var today = DateTime.Today;
+
+            foreach (var room in rooms)
+            {
+                var hasActiveReservation = room.Reservations.Any(r => r.EntryDate <= today && r.ExitDate > today);
+                room.Status = hasActiveReservation ? "Ocupada" : "Libre";
+            }
+
+            return rooms;
+        }
+
+        // API: crear habitación
+        [HttpPost("/api/rooms")]
         public async Task<ActionResult<Room>> CreateRoom(Room room)
         {
-            room.Status = "Libre"; // siempre inicia libre
+            room.Status = "Libre";
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetRooms), new { id = room.Id }, room);

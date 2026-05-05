@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var showSidebar = ViewData["ShowSidebar"] as bool? ?? false;
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -9,6 +12,15 @@
     <link rel="stylesheet" href="~/css/all.min.css" />
 </head>
 <body>
-    @RenderBody()
+    <div class="flex min-h-screen bg-gray-100">
+        @if (showSidebar)
+        {
+            @await Html.PartialAsync("_SideBar")
+        }
+
+        <main class="flex-1 @(showSidebar ? "ml-64" : "")">
+            @RenderBody()
+        </main>
+    </div>
 </body>
 </html>

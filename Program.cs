@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<HotelContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("HotelConnection"),
-        new MySqlServerVersion(new Version(8, 0, 26))
+        new MySqlServerVersion(new Version(8, 26))
     )
 );
 

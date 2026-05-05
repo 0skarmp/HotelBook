@@ -1,0 +1,117 @@
+﻿@{
+    ViewData["Title"] = "Habitaciones";
+    ViewData["ShowSidebar"] = true;
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("_Header")
+
+<main class="p-6">
+    <h1 class="text-2xl font-bold mb-4 text-red-800">Bienvenido al Menu de Habitaciones</h1>
+
+            <!-- Resumen rápido -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                <div class="p-4 bg-white rounded shadow">
+                    <p class="text-sm text-gray-500">Total habitaciones</p>
+                    <p id="totalRooms" class="text-2xl font-bold">0</p>
+                </div>
+                <div class="p-4 bg-white rounded shadow">
+                    <p class="text-sm text-gray-500">Disponibles</p>
+                    <p id="availableRooms" class="text-2xl font-bold text-green-600">0</p>
+                </div>
+                <div class="p-4 bg-white rounded shadow">
+                    <p class="text-sm text-gray-500">Ocupadas</p>
+                    <p id="occupiedRooms" class="text-2xl font-bold text-red-600">0</p>
+                </div>
+            </div>
+
+            <!-- Controles -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                <div class="flex items-center gap-2">
+                    <input id="searchInput" type="text" placeholder="Buscar por número o tipo" class="px-3 py-2 border rounded w-64" />
+                    <select id="statusFilter" class="px-3 py-2 border rounded">
+                        <option value="all">Todos</option>
+                        <option value="Libre">Disponibles</option>
+                        <option value="Ocupada">Ocupadas</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button id="openCreateModalBtn" class="px-4 py-2 bg-blue-600 text-white rounded">
+                        Agregar Habitación
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenedor de habitaciones -->
+            <div id="roomsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        </main>
+
+@await Html.PartialAsync("_CreateRoomModal")
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        window.rooms = [];
+
+        function renderRooms() {
+            const container = document.getElementById("roomsContainer");
+            const query = (document.getElementById("searchInput").value || '').toLowerCase();
+            const statusFilter = document.getElementById("statusFilter").value;
+
+            const filtered = window.rooms.filter(r => {
+                const matchesStatus = statusFilter === 'all' || r.status === statusFilter;
+                const matchesQuery = String(r.number).toLowerCase().includes(query) || (r.type || '').toLowerCase().includes(query);
+                return matchesStatus && matchesQuery;
+            });
+
+            container.innerHTML = '';
+
+            filtered.forEach(room => {
+                const isAvailable = room.status === 'Libre';
+                const cardHtml = `
+                    <div class="p-4 rounded shadow-md ${isAvailable ? 'bg-green-200' : 'bg-red-200'}">
+
+                        <div class="flex justify-between">
+                            <div>
+                                <h2 class="font-bold">${room.number}</h2>
+                                <p>${room.type}</p>
+                            </div>
+
+                            <span class="px-2 py-1 ${room.status === 'Libre' ? 'bg-green-600' : 'bg-red-600'} text-white text-xs rounded">
+                                ${room.status}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML("beforeend", cardHtml);
+            });
+
+            document.getElementById('totalRooms').textContent = window.rooms.length;
+            document.getElementById('availableRooms').textContent =
+                window.rooms.filter(r => r.status === 'Libre').length;
+            document.getElementById('occupiedRooms').textContent =
+                window.rooms.filter(r => r.status === 'Ocupada').length;
+        }
+
+        async function loadRooms() {
+            const res = await fetch('/api/rooms');
+            if (!res.ok) return;
+            window.rooms = await res.json();
+            renderRooms();
+        }
+
+        document.getElementById("openCreateModalBtn").addEventListener("click", () => {
+            document.getElementById("createRoomModal").classList.remove("hidden");
+        });
+
+        document.getElementById("closeCreateModalBtn").addEventListener("click", () => {
+            document.getElementById("createRoomModal").classList.add("hidden");
+        });
+
+        document.getElementById('searchInput').addEventListener('input', renderRooms);
+        document.getElementById('statusFilter').addEventListener('change', renderRooms);
+
+        loadRooms();
+    });
+</script>

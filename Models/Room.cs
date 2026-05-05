@@ -27,6 +27,6 @@ namespace Hotel.Models
         public string Passport { get; set; } = string.Empty;
         public DateTime EntryDate { get; set; }
         public DateTime ExitDate { get; set; }
-
+        public string Status { get; set; } = "ocupado"; // ocupado, mantenimiento, bloqueado
     }
 }
