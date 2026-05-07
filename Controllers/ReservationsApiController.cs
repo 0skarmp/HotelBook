@@ -16,7 +16,7 @@ namespace Hotel.Controllers
             _context = context;
         }
 
-        private async Task LogReport(string actionType, int? reservationId, string details = null)
+        private async Task LogReport(string actionType, int? reservationId, string? details = null)
         {
             // Si tienes autenticación propia, aquí puedes obtener el usuario actual
             var userName = User.Identity?.Name ?? "Unknown";

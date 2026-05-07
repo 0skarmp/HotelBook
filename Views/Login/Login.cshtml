@@ -52,10 +52,15 @@
 
         if (response.ok) {
             const data = await response.json();
+            localStorage.setItem('hotelCurrentUser', JSON.stringify({
+                username: data.username || document.getElementById('username').value,
+                email: data.email || ''
+            }));
             alert("Login exitoso: " + data.message);
             window.location.href = "/Dashboard";
         } else {
-            document.getElementById("error").innerText = "Usuario o contraseña incorrectos";
+            const errorData = await response.json().catch(() => null);
+            document.getElementById("error").innerText = errorData?.error || "Usuario o contraseña incorrectos";
         }
     });
 

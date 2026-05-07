@@ -36,7 +36,12 @@ namespace Hotel.Controllers
 
             if (existingUser != null)
             {
-                return Ok(new { message = "Login exitoso", email = existingUser.Email });
+                return Ok(new
+                {
+                    message = "Login exitoso",
+                    username = existingUser.Username,
+                    email = existingUser.Email
+                });
             }
 
             return Unauthorized(new { error = "Usuario o contraseña incorrectos" });

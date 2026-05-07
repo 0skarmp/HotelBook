@@ -96,13 +96,46 @@
 
         async function loadRooms() {
             const res = await fetch('/api/rooms');
-            if (!res.ok) return;
+            if (!res.ok) {
+                return;
+            }
             window.rooms = await res.json();
+            renderRooms();
+        }
+        
+        async function createRoom(data) {
+            const res = await fetch('/api/rooms', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const payload = await res.json().catch(() => null);
+            if (!res.ok) {
+                const message = payload?.error || payload?.title || 'Error al crear la habitación';
+                alert(message);
+                return;
+            }
+            const newRoom = payload;
+            window.rooms.push(newRoom);
             renderRooms();
         }
 
         document.getElementById("openCreateModalBtn").addEventListener("click", () => {
             document.getElementById("createRoomModal").classList.remove("hidden");
+        });
+
+        document.getElementById("createRoomForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const roomNumber = document.getElementById("roomNumber").value.trim();
+            const roomType = document.getElementById("roomType").value;
+            if (!roomNumber) {
+                alert('Ingrese el número de la habitación');
+                return;
+            }
+            await createRoom({ number: roomNumber, type: roomType });
+            document.getElementById("createRoomModal").classList.add("hidden");
+            document.getElementById("roomNumber").value = "";
+            document.getElementById("roomType").value = "Simple";
         });
 
         document.getElementById("closeCreateModalBtn").addEventListener("click", () => {

@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Huéspedes";
+    ViewData["ShowSidebar"] = true;
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("_Header")
+
+<main class="p-6 text-black">
+    <div class="flex flex-col gap-2 mb-6">
+        <h1 class="text-2xl font-bold text-green-700">Reporte de Huéspedes</h1>
+        <p class="text-gray-600">Listado de todos los huéspedes que ingresaron al hotel y tienen reserva registrada.</p>
+    </div>
+
+    <div class="overflow-x-auto bg-white rounded shadow border border-gray-200">
+        <table class="min-w-full border-collapse text-sm text-left">
+            <thead class="bg-gray-100 text-gray-700">
+                <tr>
+                    <th class="border border-gray-200 px-4 py-3">Habitación</th>
+                    <th class="border border-gray-200 px-4 py-3">Huésped</th>
+                    <th class="border border-gray-200 px-4 py-3">País</th>
+                    <th class="border border-gray-200 px-4 py-3">Teléfono</th>
+                    <th class="border border-gray-200 px-4 py-3">Documento</th>
+                    <th class="border border-gray-200 px-4 py-3">Entrada</th>
+                    <th class="border border-gray-200 px-4 py-3">Salida</th>
+                    <th class="border border-gray-200 px-4 py-3">Estado</th>
+                </tr>
+            </thead>
+            <tbody id="guestsBody" class="divide-y divide-gray-200"></tbody>
+        </table>
+    </div>
+
+    <div id="emptyState" class="hidden mt-4 p-4 bg-yellow-50 text-yellow-800 rounded border border-yellow-200">
+        No se encontraron huéspedes con reservas.
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const guestsBody = document.getElementById("guestsBody");
+        const emptyState = document.getElementById("emptyState");
+
+        const response = await fetch("/api/guests");
+        if (!response.ok) {
+            emptyState.textContent = "No se pudo cargar la lista de huéspedes.";
+            emptyState.classList.remove("hidden");
+            return;
+        }
+
+        const reservations = await response.json();
+        guestsBody.innerHTML = "";
+
+        if (!reservations.length) {
+            emptyState.classList.remove("hidden");
+            return;
+        }
+
+        reservations.forEach(reservation => {
+            const row = document.createElement("tr");
+            row.className = "hover:bg-gray-50";
+            row.innerHTML = `
+                <td class="border border-gray-200 px-4 py-3 font-medium">${reservation.room ? reservation.room.number + ' (' + reservation.room.type + ')' : 'N/A'}</td>
+                <td class="border border-gray-200 px-4 py-3">${reservation.firstName} ${reservation.middleName ? reservation.middleName + ' ' : ''}${reservation.lastName}</td>
+                <td class="border border-gray-200 px-4 py-3">${reservation.country}</td>
+                <td class="border border-gray-200 px-4 py-3">${reservation.phoneNumber}</td>
+                <td class="border border-gray-200 px-4 py-3">${reservation.passport}</td>
+                <td class="border border-gray-200 px-4 py-3">${new Date(reservation.entryDate).toLocaleDateString('es-ES')}</td>
+                <td class="border border-gray-200 px-4 py-3">${new Date(reservation.exitDate).toLocaleDateString('es-ES')}</td>
+                <td class="border border-gray-200 px-4 py-3">${reservation.status}</td>
+            `;
+            guestsBody.appendChild(row);
+        });
+    });
+</script>

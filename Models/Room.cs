@@ -5,11 +5,10 @@ namespace Hotel.Models
     public class Room
     {
         public int Id { get; set; }
-        public string Number { get; set; } = string.Empty;
+        public int Number { get; set; }
         public string Type { get; set; } = string.Empty;
-        public string Status { get; set; } = "Libre"; // por defecto libre
-
-        // Relación con reservas (inicializada para evitar error 400)
+        public string Status { get; set; } = "Libre"; 
+        [JsonIgnore]
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 
@@ -17,7 +16,6 @@ namespace Hotel.Models
     {
         public int Id { get; set; }
         public int RoomId { get; set; }
-        [JsonIgnore]
         public Room? Room { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string MiddleName { get; set; } = string.Empty;
@@ -27,6 +25,8 @@ namespace Hotel.Models
         public string Passport { get; set; } = string.Empty;
         public DateTime EntryDate { get; set; }
         public DateTime ExitDate { get; set; }
-        public string Status { get; set; } = "ocupado"; // ocupado, mantenimiento, bloqueado
+        public string Status { get; set; } = "ocupado"; 
+        public string RoomNumber => Room?.Number.ToString() ?? string.Empty;
+        public string RoomType => Room?.Type ?? string.Empty;
     }
 }

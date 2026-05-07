@@ -2,11 +2,10 @@
 
     <!-- IZQUIERDA -->
     <div class="flex items-center gap-3">
-        <span class="text-gray-400 cursor-pointer text-lg">✕</span>
 
         <div>
             <h2 class="text-sm font-semibold text-gray-800">
-                Bienvenido, .Usuario
+                Turno de Usuario
             </h2>
             <p class="text-xs text-gray-500">
                 @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy")
@@ -17,12 +16,12 @@
     <!-- DERECHA -->
     <div class="flex items-center gap-3">
 
-        <!-- HOTEL -->
+        <!-- HOTEL 
         <div class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full flex items-center gap-1">
             🏨 Hotel Imperial
         </div>
 
-        <!-- CAJA -->
+       CAJA 
         <div class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full flex items-center gap-2">
             🔒 Cerrar Caja
             <span class="bg-green-200 px-2 py-0.5 rounded-full font-semibold">
@@ -30,22 +29,85 @@
             </span>
         </div>
 
-        <!-- PRO -->
+         PRO 
         <div class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full flex items-center gap-1">
             👑 Pro
         </div>
 
-        <!-- USUARIO -->
-        <div class="flex items-center gap-2 ml-2">
-            <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
-                .Usuario.Substring(0, 1)
-            </div>
+      USUARIO -->
+        <div class="relative ml-2" id="userProfileMenu">
+            <button id="profileToggle" class="flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 bg-white hover:bg-gray-100 focus:outline-none">
+                <div id="headerUserAvatar" class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">U</div>
+                <div class="text-xs text-gray-700 text-left">
+                    <div id="headerUserName" class="font-semibold">Usuario</div>
+                    <div id="headerUserEmail" class="text-gray-500">Ver perfil</div>
+                </div>
+            </button>
 
-            <div class="text-xs text-gray-700">
-                <div class="font-semibold">Usuario</div>
-                <div class="text-gray-500">Ver perfil</div>
+            <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div class="px-4 py-3 border-b border-gray-100">
+                    <div id="dropdownUserName" class="font-semibold text-gray-900">Usuario</div>
+                    <div id="dropdownUserEmail" class="text-xs text-gray-500">email@hotel.com</div>
+                </div>
+                <button id="viewProfileBtn" class="w-full text-left px-4 py-3 hover:bg-gray-50">Ver perfil</button>
+                <button id="logoutBtn" class="w-full text-left px-4 py-3 text-red-600 hover:bg-gray-50">Cerrar turno</button>
             </div>
         </div>
 
     </div>
 </div>
+
+<script>
+    (function() {
+        const user = JSON.parse(localStorage.getItem('hotelCurrentUser') || 'null');
+        const headerName = document.getElementById('headerUserName');
+        const headerEmail = document.getElementById('headerUserEmail');
+        const avatar = document.getElementById('headerUserAvatar');
+        const dropdownName = document.getElementById('dropdownUserName');
+        const dropdownEmail = document.getElementById('dropdownUserEmail');
+        const profileToggle = document.getElementById('profileToggle');
+        const profileDropdown = document.getElementById('profileDropdown');
+        const viewProfileBtn = document.getElementById('viewProfileBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        const updateUser = () => {
+            if (user && user.username) {
+                const displayName = user.username;
+                const email = user.email || 'Sin correo';
+                headerName.textContent = displayName;
+                headerEmail.textContent = email;
+                dropdownName.textContent = displayName;
+                dropdownEmail.textContent = email;
+                avatar.textContent = displayName.charAt(0).toUpperCase();
+            } else {
+                headerName.textContent = 'Invitado';
+                headerEmail.textContent = 'Inicia sesión';
+                dropdownName.textContent = 'Invitado';
+                dropdownEmail.textContent = 'Sin sesión activa';
+                avatar.textContent = 'I';
+            }
+        };
+
+        updateUser();
+
+        profileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!profileToggle.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        viewProfileBtn.addEventListener('click', () => {
+            window.location.href = '/Profile';
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('hotelCurrentUser');
+            window.location.href = '/Login';
+        });
+    })();
+</script>
