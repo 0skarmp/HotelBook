@@ -18,12 +18,11 @@ namespace Hotel.Controllers
 
         private async Task LogReport(string actionType, int? reservationId, string? details = null)
         {
-            // Si tienes autenticación propia, aquí puedes obtener el usuario actual
             var userName = User.Identity?.Name ?? "Unknown";
 
             var report = new Report
             {
-                UserId = "system", // puedes cambiarlo si manejas Id de usuario
+                UserId = "system", 
                 UserName = userName,
                 ActionType = actionType,
                 ReservationId = reservationId,
@@ -35,7 +34,6 @@ namespace Hotel.Controllers
             await _context.SaveChangesAsync();
         }
 
-        // CREAR RESERVA
         [HttpPost]
         public async Task<ActionResult<Reservation>> CreateReservation(Reservation reservation)
         {
@@ -69,7 +67,6 @@ namespace Hotel.Controllers
             return CreatedAtAction(nameof(GetReservation), new { id = reservation.Id }, reservation);
         }
 
-        // OBTENER TODAS LAS RESERVAS
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
         {
@@ -78,7 +75,6 @@ namespace Hotel.Controllers
                 .ToListAsync();
         }
 
-        // OBTENER REPORTES DEL DÍA
         [HttpGet("reports/today")]
         public async Task<ActionResult<IEnumerable<Report>>> GetTodayReports()
         {
@@ -89,7 +85,6 @@ namespace Hotel.Controllers
                 .ToListAsync();
         }
 
-        // OBTENER RESERVA POR ID
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
@@ -103,7 +98,7 @@ namespace Hotel.Controllers
             return reservation;
         }
 
-        // CHECKOUT (LIBERAR HABITACIÓN)
+
         [HttpPut("{id}/checkout")]
         public async Task<IActionResult> Checkout(int id)
         {
@@ -126,7 +121,7 @@ namespace Hotel.Controllers
             return NoContent();
         }
 
-        // ELIMINAR RESERVA
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReservation(int id)
         {

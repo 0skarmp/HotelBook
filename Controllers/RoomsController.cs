@@ -14,14 +14,12 @@ namespace Hotel.Controllers
             _context = context;
         }
 
-        // Vista principal
         [HttpGet]
         public IActionResult Index()
         {
             return View("Rooms");
         }
 
-        // API: obtener habitaciones
         [HttpGet("/api/rooms")]
         public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
         {
@@ -41,11 +39,9 @@ namespace Hotel.Controllers
             return Ok(rooms);
         }
 
-        // API: crear habitación
         [HttpPost("/api/rooms")]
         public async Task<ActionResult<Room>> CreateRoom([FromBody] Room room)
         {
-            // Validaciones
             if (room == null)
             {
                 return BadRequest(new { error = "Los datos de la habitación son requeridos" });
@@ -61,7 +57,6 @@ namespace Hotel.Controllers
                 return BadRequest(new { error = "El tipo de habitación es requerido" });
             }
 
-            // Verificar si ya existe una habitación con el mismo número
             var existingRoom = await _context.Rooms
                 .FirstOrDefaultAsync(r => r.Number == room.Number);
             
@@ -77,7 +72,6 @@ namespace Hotel.Controllers
             return CreatedAtAction(nameof(GetRooms), new { id = room.Id }, room);
         }
 
-        // API: eliminar habitación
         [HttpDelete("/api/rooms/{id}")]
         public async Task<ActionResult> DeleteRoom(int id)
         {
