@@ -39,6 +39,7 @@ namespace Hotel.Controllers
                 return Ok(new
                 {
                     message = "Login exitoso",
+                    id = existingUser.Id,
                     username = existingUser.Username,
                     email = existingUser.Email
                 });

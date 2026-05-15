@@ -93,10 +93,17 @@
             exitDate: formData.get("exitDate") + 'T00:00:00',
             status: formData.get("status")
         };
+        const currentUser = JSON.parse(localStorage.getItem('hotelCurrentUser') || 'null');
+        const headers = { "Content-Type": "application/json" };
+
+        if (currentUser && currentUser.username) {
+            headers["X-Hotel-User-Id"] = String(currentUser.id || '');
+            headers["X-Hotel-User-Name"] = currentUser.username;
+        }
 
         const response = await fetch("/api/reservations", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify(reservation)
         });
 

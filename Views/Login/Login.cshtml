@@ -44,10 +44,15 @@
 
         if (response.ok) {
             const data = await response.json();
+            const now = new Date().toISOString();
             localStorage.setItem('hotelCurrentUser', JSON.stringify({
+                id: data.id || '',
                 username: data.username || document.getElementById('username').value,
-                email: data.email || ''
+                email: data.email || '',
+                loginAt: now,
+                logoutAt: ''
             }));
+            localStorage.removeItem('hotelLastShift');
             window.location.href = "/Dashboard";
         } else {
             const errorData = await response.json().catch(() => null);

@@ -18,11 +18,18 @@ namespace Hotel.Controllers
 
         private async Task LogReport(string actionType, int? reservationId, string? details = null)
         {
-            var userName = User.Identity?.Name ?? "Unknown";
+            var headerUserName = Request.Headers["X-Hotel-User-Name"].FirstOrDefault();
+            var headerUserId = Request.Headers["X-Hotel-User-Id"].FirstOrDefault();
+            var userName = !string.IsNullOrWhiteSpace(headerUserName)
+                ? headerUserName
+                : User.Identity?.Name ?? "Unknown";
+            var userId = !string.IsNullOrWhiteSpace(headerUserId)
+                ? headerUserId
+                : "system";
 
             var report = new Report
             {
-                UserId = "system", 
+                UserId = userId,
                 UserName = userName,
                 ActionType = actionType,
                 ReservationId = reservationId,

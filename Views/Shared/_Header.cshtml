@@ -106,6 +106,12 @@
         });
 
         logoutBtn.addEventListener('click', () => {
+            if (user && user.username) {
+                localStorage.setItem('hotelLastShift', JSON.stringify({
+                    ...user,
+                    logoutAt: new Date().toISOString()
+                }));
+            }
             localStorage.removeItem('hotelCurrentUser');
             window.location.href = '/Login';
         });
