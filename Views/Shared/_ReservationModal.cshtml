@@ -1,68 +1,68 @@
 ﻿
 
-<div id="reservationModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center">
-    <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+<div id="reservationModal" class="left-[256px] fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-auto">
+    <div class="bg-white rounded-lg shadow-lg p-6 my-auto max-h-[calc(100vh-60px)] flex flex-col">
         <h2 class="text-xl font-bold mb-4">Nueva Reserva</h2>
+        <form id="reservationForm" class="flex flex-col gap-4 flex-1 overflow-hidden">
+            <section class="flex flex-col gap-2 overflow-auto flex-1">
+                <input type="hidden" id="roomId" name="roomId" />
 
-        <form id="reservationForm">
-            <input type="hidden" id="roomId" name="roomId" />
-
-            <div class="mb-3">
-                <label for="firstname" class="block text-sm font-medium">First Name</label>
-                <input type="text" id="firstname" name="firstname"
+                <div class="mb-3">
+                    <label for="firstname" class="block text-sm font-medium">First Name</label>
+                    <input type="text" id="firstname" name="firstname"
                        class="w-full border rounded px-3 py-2" required />
-            </div>
+                </div>
 
-            <div class="mb-3">
-                <label for="middlename" class="block text-sm font-medium">Middle Name</label>
-                <input type="text" id="middlename" name="middlename"
+                <div class="mb-3">
+                    <label for="middlename" class="block text-sm font-medium">Middle Name</label>
+                    <input type="text" id="middlename" name="middlename"
                        class="w-full border rounded px-3 py-2" />
-            </div>
+                </div>
 
-            <div class="mb-3">
-                <label for="lastname" class="block text-sm font-medium">Last Name</label>
-                <input type="text" id="lastname" name="lastname"
+                <div class="mb-3">
+                    <label for="lastname" class="block text-sm font-medium">Last Name</label>
+                    <input type="text" id="lastname" name="lastname"
                        class="w-full border rounded px-3 py-2" required />
-            </div>
+                </div>
 
-            <div class="mb-3">
-                <label for="country" class="block text-sm font-medium">Country</label>
-                <input type="text" id="country" name="country"
+                <div class="mb-3">
+                    <label for="country" class="block text-sm font-medium">Country</label>
+                    <input type="text" id="country" name="country"
                        class="w-full border rounded px-3 py-2" required />
-            </div>
+                </div>
 
-            <div class="mb-3">
-                <label for="phoneNumber" class="block text-sm font-medium">Phone Number</label>
-                <input type="tel" id="phoneNumber" name="phoneNumber"
+                <div class="mb-3">
+                    <label for="phoneNumber" class="block text-sm font-medium">Phone Number</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber"
                        class="w-full border rounded px-3 py-2" required />
-            </div>
+                </div>
 
-            <div class="mb-3">
-                <label for="passport" class="block text-sm font-medium">Passport</label>
-                <input type="text" id="passport" name="passport"
+                <div class="mb-3">
+                    <label for="passport" class="block text-sm font-medium">Passport</label>
+                    <input type="text" id="passport" name="passport"
                        class="w-full border rounded px-3 py-2" required />
-            </div>
-            <div class="mb-3">
-                <label class="block text-sm font-medium">Entry Date</label>
-                <input type="date" id="entryDate" name="entryDate"
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium">Entry Date</label>
+                    <input type="date" id="entryDate" name="entryDate"
                        class="w-full border rounded px-3 py-2" required />
-            </div>
+                </div>
 
-            <div class="mb-3">
-                <label class="block text-sm font-medium">Exit Date</label>
-                <input type="date" id="exitDate" name="exitDate"
+                <div class="mb-3">
+                    <label class="block text-sm font-medium">Exit Date</label>
+                    <input type="date" id="exitDate" name="exitDate"
                        class="w-full border rounded px-3 py-2" required />
-            </div>
+                </div>
 
-            <div class="mb-3">
-                <label for="status" class="block text-sm font-medium">Estado</label>
-                <select id="status" name="status" class="w-full border rounded px-3 py-2" required>
-                    <option value="ocupado">Ocupado</option>
-                    <option value="mantenimiento">Mantenimiento</option>
-                    <option value="bloqueado">Bloqueado</option>
-                </select>
-            </div>
-
+                <div class="mb-3">
+                    <label for="status" class="block text-sm font-medium">Estado</label>
+                    <select id="status" name="status" class="w-full border rounded px-3 py-2" required>
+                        <option value="ocupado">Ocupado</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                        <option value="bloqueado">Bloqueado</option>
+                    </select>
+                </div>
+            </section>
             <div class="flex justify-end gap-2 mt-4">
                 <button type="button" onclick="closeReservationModal()"
                         class="px-4 py-2 bg-gray-400 text-white rounded">
