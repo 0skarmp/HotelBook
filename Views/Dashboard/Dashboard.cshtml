@@ -6,7 +6,7 @@
 
 @await Html.PartialAsync("_Header")
 
-<main class="p-6 text-black">
+<section class="p-6 text-black">
     <h1 class="text-2xl font-bold mb-4 text-indigo-700">Calendario de Habitaciones</h1>
 
     <div class="flex justify-between items-center mb-4">
@@ -15,8 +15,9 @@
         <button id="nextMonth" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Mes Siguiente</button>
     </div>
 
-    <div class="overflow-x-auto">
-        <table id="dashboardTable" class="min-w-full border-collapse border border-black text-sm text-center shadow-md rounded-lg">
+
+    <div class="w-full overflow-x-auto border rounded-lg">
+        <table id="dashboardTable" class="w-full border-collapse border border-black shadow-md table-fixed">
             <thead class="bg-gray-200 text-black font-semibold">
                 <tr>
                     <th class="border border-black px-4 py-2">Habitación</th>
@@ -26,7 +27,8 @@
             </tbody>
         </table>
     </div>
-</main>
+
+</section>
 
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
@@ -44,13 +46,13 @@
             const theadRow = table.querySelector("thead tr");
             const tbody = table.querySelector("tbody");
 
-            theadRow.innerHTML = '<th class="border border-black px-4 py-2">Habitación</th>';
+            theadRow.innerHTML = '<th class="border border-black px-4 py-2 w-32 min-w-32">Habitaciónes / Dias</th>';
             tbody.innerHTML = '';
 
             for (let day = 1; day <= daysInMonth; day++) {
                 const th = document.createElement("th");
-                th.className = "border border-black px-2 py-2 text-xs";
-                th.textContent = day;
+                th.className = "border border-black px-2 py-2 w-16 min-w-16";
+                th.textContent = String(day).padStart(2, "0");
                 theadRow.appendChild(th);
             }
 
@@ -63,17 +65,17 @@
 
             rooms.forEach(room => {
                 const tr = document.createElement("tr");
-                tr.className = "odd:bg-white even:bg-gray-50 text-black";
+                tr.className = "text-black";
 
                 const tdRoom = document.createElement("td");
-                tdRoom.className = "border border-black px-4 py-2 font-semibold";
+                tdRoom.className = "py-2 text-center font-semibold w-32 min-w-32";
                 tdRoom.textContent = room.number + " (" + room.type + ")";
                 tr.appendChild(tdRoom);
 
                 for (let day = 1; day <= daysInMonth; day++) {
                     const date = new Date(year, month - 1, day);
                     const td = document.createElement("td");
-                    td.className = "border border-black px-0 relative";
+                    td.className = "border border-black p-0 relative h-10 w-16 min-w-16";
 
                     const dayReservations = reservations.filter(r =>
                         r.roomId === room.id &&
@@ -93,28 +95,11 @@
                             return date > entry && date < exit;
                         });
 
-                        const createClickArea = (td, side) => {
-                            const clickArea = document.createElement("div");
-                            clickArea.style.position = "absolute";
-                            clickArea.style.top = "0";
-                            clickArea.style.bottom = "0";
-                            clickArea.style.width = "50%";
-                            clickArea.style.cursor = "pointer";
-                            clickArea.style[side] = "0";
-                            clickArea.addEventListener("click", (e) => {
-                                e.stopPropagation();
-                                const newDate = new Date(year, month - 1, day);
-                                document.getElementById("roomId").value = room.id;
-                                document.getElementById("entryDate").value = newDate.toISOString().split('T')[0];
-                                document.getElementById("exitDate").value = new Date(newDate.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-                                document.getElementById("reservationModal").classList.remove("hidden");
-                            });
-                            td.appendChild(clickArea);
-                        };
+                  
 
                         if (betweenReservations.length > 0 || (entryReservations.length > 0 && exitReservations.length > 0)) {
                         const bar = document.createElement("div");
-                        bar.className = "h-8 relative";
+                        bar.className = "absolute inset-0";
 
                         let color = "#22c55e";
 
@@ -145,49 +130,40 @@
                                         : "#22c55e")
                                 : exitColor;
 
-                            bar.style.background = `linear-gradient(to right, ${exitColor} 50%, ${entryColor} 50%)`;
-
+                        
                             const divider = document.createElement("div");
-
                             divider.style.position = "absolute";
                             divider.style.left = "50%";
                             divider.style.top = "0";
                             divider.style.width = "2px";
                             divider.style.height = "100%";
                             divider.style.background = "white";
-                            divider.style.transform = "translateX(-50%)";
-
                             bar.appendChild(divider);
-}
+                            }
                             container.appendChild(bar);
                         } else {
                             if (entryReservations.length > 0) {
                                 entryReservations.forEach(res => {
                                     const color = res.status === "mantenimiento" ? "#facc15" : res.status === "bloqueado" ? "#ef4444" : "#22c55e";
                                     const wrapper = document.createElement("div");
-                                    wrapper.className = "relative h-8 rounded-sm overflow-hidden";
-                                    wrapper.style.background = "white";
+                                    wrapper.className = "absolute inset-0";
                                     const bar = document.createElement("div");
-                                    bar.className = "h-full";
-                                    bar.style.background = `linear-gradient(to right, transparent 50%, ${color} 50%)`;
+                                    bar.className = "absolute inset-0";
+                                    bar.style.background = color;
                                     wrapper.appendChild(bar);
-                                    createClickArea(wrapper, "left");
-                                    container.appendChild(wrapper);
+                                    td.appendChild(wrapper);
                                 });
                             }
                             if (exitReservations.length > 0) {
                                 exitReservations.forEach(res => {
                                     const color = res.status === "mantenimiento" ? "#facc15" : res.status === "bloqueado" ? "#ef4444" : "#22c55e";
                                     const wrapper = document.createElement("div");
-                                    wrapper.className = "relative h-8 rounded-sm overflow-hidden";
+                                    wrapper.className = "absolute inset-0";
                                     wrapper.style.background = "white";
                                     const bar = document.createElement("div");
                                     bar.className = "h-full";
-                                    bar.style.background = `linear-gradient(to right, ${color} 50%, transparent 50%)`;
+                                    bar.style.background = color;
                                     wrapper.appendChild(bar);
-                                    if (entryReservations.length === 0) {
-                                        createClickArea(wrapper, "right");
-                                    }
                                     container.appendChild(wrapper);
                                 });
                             }
